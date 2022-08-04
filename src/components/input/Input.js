@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import IconEyeOpen from "../icon/IconEyeOpen";
 import { useController } from "react-hook-form";
 
 const InputStyles = styled.div`
@@ -24,7 +23,7 @@ const InputStyles = styled.div`
     input::-moz-input-placeholder {
         color: #84878b;
     }
-    .icon-eye {
+    .input-icon {
         position: absolute;
         cursor: pointer;
         top: 50%;
@@ -50,7 +49,7 @@ function Input({
     return (
         <InputStyles hasIcon={hasIcon}>
             <input id={name} type={type} {...field} {...props} />
-            {hasIcon ? <IconEyeOpen className="icon-eye"></IconEyeOpen> : null}
+            {hasIcon ? children : null}
         </InputStyles>
     );
 }
