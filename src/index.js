@@ -4,6 +4,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./styles/GlobalStyles";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { theme } from "./utils/constants";
 import { BrowserRouter } from "react-router-dom";
 import { createRoot } from "react-dom/client";
@@ -16,6 +18,7 @@ root.render(
             <GlobalStyles></GlobalStyles>
             <BrowserRouter>
                 <App />
+                <ToastContainer></ToastContainer>
             </BrowserRouter>
         </ThemeProvider>
     </React.StrictMode>
