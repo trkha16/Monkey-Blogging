@@ -1,12 +1,14 @@
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/firebase-config";
+import styled from "styled-components";
+import Header from "../components/layout/Header";
+
+const HomePageStyles = styled.div``;
 
 function HomePage() {
-    const handleSignOut = () => {
-        signOut(auth);
-    };
-
-    return <button onClick={handleSignOut}>Sign out</button>;
+    return (
+        <HomePageStyles>
+            <Header></Header>
+        </HomePageStyles>
+    );
 }
 
 export default HomePage;
