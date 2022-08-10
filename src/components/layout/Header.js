@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Button from "../button/Button";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../contexts/auth-context";
 
 const HeaderStyles = styled.header`
     padding: 40px 0;
@@ -29,6 +30,7 @@ const HeaderStyles = styled.header`
         display: flex;
         align-items: center;
         position: relative;
+        margin-right: 25px;
     }
     .search-input {
         flex: 1;
@@ -46,6 +48,14 @@ const HeaderStyles = styled.header`
 `;
 
 function Header() {
+    const { userInfo } = useAuth();
+
+    const getLastName = (name) => {
+        if (!name) return "User";
+        const length = name.split(" ").length;
+        return name.split(" ")[length - 1];
+    };
+
     return (
         <HeaderStyles>
             <div className="container">
@@ -103,13 +113,24 @@ function Header() {
                             </svg>
                         </span>
                     </div>
-                    <Button
-                        style={{ maxWidth: "200px" }}
-                        className="header-button"
-                        height="56px"
-                    >
-                        Sign Up
-                    </Button>
+                    {!userInfo ? (
+                        <Button
+                            type="button"
+                            style={{ maxWidth: "200px" }}
+                            className="header-button"
+                            height="56px"
+                            to="/sign-up"
+                        >
+                            Sign Up
+                        </Button>
+                    ) : (
+                        <div className="header-auth">
+                            <span>Welcome back, </span>
+                            <strong className="text-primary">
+                                {getLastName(userInfo?.displayName)}
+                            </strong>
+                        </div>
+                    )}
                 </div>
             </div>
         </HeaderStyles>

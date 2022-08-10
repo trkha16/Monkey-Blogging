@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const ButtonStyles = styled.button`
@@ -24,7 +25,22 @@ const ButtonStyles = styled.button`
     }
 `;
 
-function Button({ type = "button", onClick = () => {}, children, ...props }) {
+function Button({
+    type = "button",
+    onClick = () => {},
+    children,
+    to = "",
+    ...props
+}) {
+    if (to !== "" && typeof to === "string") {
+        return (
+            <NavLink to={to}>
+                <ButtonStyles type={type} {...props}>
+                    {children}
+                </ButtonStyles>
+            </NavLink>
+        );
+    }
     return (
         <ButtonStyles type={type} onClick={onClick} {...props}>
             {children}
