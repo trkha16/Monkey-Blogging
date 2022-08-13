@@ -3,7 +3,7 @@ import Heading from "../../components/layout/Heading";
 import PostFeatureItem from "../post/PostFeatureItem";
 
 const HomeFeatureStyles = styled.div`
-    padding-top: 40px;
+    padding-top: 60px;
 `;
 
 const HomeFeature = () => {
