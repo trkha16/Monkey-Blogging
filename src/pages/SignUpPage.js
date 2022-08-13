@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/button/Button";
 import Field from "../components/field/Field";
-import IconEyeClose from "../components/icon/IconEyeClose";
-import IconEyeOpen from "../components/icon/IconEyeOpen";
 import Input from "../components/input/Input";
 import Label from "../components/label/Label";
 import * as yup from "yup";
@@ -14,6 +12,7 @@ import { auth, db } from "../firebase/firebase-config";
 import { NavLink, useNavigate } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
 import AuthenticationPage from "./AuthenticationPage";
+import InputPasswordToggle from "../components/input/InputPasswordToggle";
 
 const schema = yup.object({
     fullname: yup.string().required("Please enter your fullname"),
@@ -28,8 +27,6 @@ const schema = yup.object({
 });
 
 function SignUpPage() {
-    const [togglePassword, setTogglePassword] = useState(false);
-
     const navigate = useNavigate();
 
     const {
@@ -100,25 +97,9 @@ function SignUpPage() {
                 </Field>
                 <Field>
                     <Label htmlFor="password">Password</Label>
-                    <Input
-                        type={togglePassword ? "text" : "password"}
-                        name="password"
-                        placeholder="Enter your password"
+                    <InputPasswordToggle
                         control={control}
-                        hasIcon
-                    >
-                        {!togglePassword ? (
-                            <IconEyeClose
-                                className="input-icon"
-                                onClick={() => setTogglePassword(true)}
-                            ></IconEyeClose>
-                        ) : (
-                            <IconEyeOpen
-                                className="input-icon"
-                                onClick={() => setTogglePassword(false)}
-                            ></IconEyeOpen>
-                        )}
-                    </Input>
+                    ></InputPasswordToggle>
                 </Field>
                 <div className="have-account">
                     You already have an account?{" "}

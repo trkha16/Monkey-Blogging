@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/button/Button";
@@ -10,10 +10,9 @@ import AuthenticationPage from "./AuthenticationPage";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
-import IconEyeClose from "../components/icon/IconEyeClose";
-import IconEyeOpen from "../components/icon/IconEyeOpen";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebase-config";
+import InputPasswordToggle from "../components/input/InputPasswordToggle";
 
 const schema = yup.object({
     email: yup
@@ -27,7 +26,6 @@ const schema = yup.object({
 });
 
 function SignInPage() {
-    const [togglePassword, setTogglePassword] = useState(false);
     const { userInfo } = useAuth();
     const navigate = useNavigate();
     const {
@@ -74,25 +72,9 @@ function SignInPage() {
                 </Field>
                 <Field>
                     <Label htmlFor="password">Password</Label>
-                    <Input
-                        type={togglePassword ? "text" : "password"}
-                        name="password"
-                        placeholder="Enter your password"
+                    <InputPasswordToggle
                         control={control}
-                        hasIcon
-                    >
-                        {!togglePassword ? (
-                            <IconEyeClose
-                                className="input-icon"
-                                onClick={() => setTogglePassword(true)}
-                            ></IconEyeClose>
-                        ) : (
-                            <IconEyeOpen
-                                className="input-icon"
-                                onClick={() => setTogglePassword(false)}
-                            ></IconEyeOpen>
-                        )}
-                    </Input>
+                    ></InputPasswordToggle>
                 </Field>
                 <div className="have-account">
                     Not a member? <NavLink to={"/sign-up"}>Sign up</NavLink>
