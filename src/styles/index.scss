@@ -89,6 +89,15 @@ a {
     @media screen and (max-width: 1023.98px) {
         grid-auto-flow: column;
         scroll-snap-type: x mandatory;
-        overflow: auto;
+        overflow-x: auto;
+    }
+    & > * {
+        scroll-snap-align: start;
+    }
+    &--primary {
+        grid-auto-columns: 220px;
+        @media screen and (min-width: 1024px) {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
     }
 }
