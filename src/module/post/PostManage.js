@@ -37,10 +37,9 @@ const PostManage = () => {
                                     className="w-[66px] h-[55px] rounded object-cover"
                                 />
                                 <div className="flex-1">
-                                    <h3 className="font-semibold text-red-600">
+                                    <h3 className="font-semibold">
                                         One Special 4K Camera
                                     </h3>
-                                    <h4 className="text-red-700">Khaaa</h4>
                                     <time className="text-sm text-gray-500">
                                         Date: 25 Oct 2021
                                     </time>
