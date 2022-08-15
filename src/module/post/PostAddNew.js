@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import slugify from "slugify";
 import styled from "styled-components";
@@ -8,20 +7,13 @@ import Field from "../../components/field/Field";
 import Input from "../../components/input/Input";
 import Label from "../../components/label/Label";
 import { postStatus } from "../../utils/constants";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/firebase-config";
-import {
-    getStorage,
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-} from "firebase/storage";
 import ImageUpload from "../../components/image/ImageUpload";
+import useFirebaseImage from "../../hooks/useFirebaseImage";
 
 const PostAddNewStyles = styled.div``;
 
 function PostAddNew() {
-    const { control, watch, setValue, handleSubmit } = useForm({
+    const { control, watch, setValue, handleSubmit, getValues } = useForm({
         mode: "onChange",
         defaultValues: {
             title: "",
@@ -38,55 +30,8 @@ function PostAddNew() {
         cloneValues.slug = slugify(values.slug || values.title);
     };
 
-    const [progress, setProgress] = useState(0);
-    const [image, setImage] = useState("");
-
-    const handleUploadImage = (file) => {
-        const storage = getStorage();
-
-        const storageRef = ref(storage, "images/" + file.name);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-                // Observe state change events such as progress, pause, and resume
-                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                const progressPercent =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                setProgress(progressPercent);
-                switch (snapshot.state) {
-                    case "paused":
-                        console.log("Upload is paused");
-                        break;
-                    case "running":
-                        console.log("Upload is running");
-                        break;
-                    default:
-                        console.log("Nothing");
-                }
-            },
-            (error) => {
-                // Handle unsuccessful uploads
-                console.log("Error");
-            },
-            () => {
-                // Handle successful uploads on complete
-                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log("File available at", downloadURL);
-                    setImage(downloadURL);
-                });
-            }
-        );
-    };
-
-    const onSelectImage = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        setValue("image", file);
-        handleUploadImage(file);
-    };
+    const { image, progress, handleSelectImage, handleDeleteImage } =
+        useFirebaseImage(setValue, getValues);
 
     return (
         <PostAddNewStyles>
@@ -114,7 +59,8 @@ function PostAddNew() {
                     <Field>
                         <Label>Image</Label>
                         <ImageUpload
-                            onChange={onSelectImage}
+                            onChange={handleSelectImage}
+                            handleDeleteImage={handleDeleteImage}
                             className="h-[250px]"
                             progress={progress}
                             image={image}
