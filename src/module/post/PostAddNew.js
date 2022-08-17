@@ -9,29 +9,71 @@ import Label from "../../components/label/Label";
 import { postStatus } from "../../utils/constants";
 import ImageUpload from "../../components/image/ImageUpload";
 import useFirebaseImage from "../../hooks/useFirebaseImage";
+import Toggle from "../../components/toggle/Toggle";
+import { useEffect, useState } from "react";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase/firebase-config";
+import Dropdown from "../../components/dropdown/Dropdown";
+import Select from "../../components/dropdown/Select";
+import List from "../../components/dropdown/List";
+import Option from "../../components/dropdown/Option";
+import { useAuth } from "../../contexts/auth-context";
+import { toast } from "react-toastify";
 
 const PostAddNewStyles = styled.div``;
 
 function PostAddNew() {
+    const { userInfo } = useAuth();
+
     const { control, watch, setValue, handleSubmit, getValues } = useForm({
         mode: "onChange",
         defaultValues: {
             title: "",
             slug: "",
             status: postStatus.PENDING,
-            category: "",
+            hot: false,
+            categoryId: "",
         },
     });
 
     const watchStatus = watch("status");
-
-    const addPostHandler = async (values) => {
-        const cloneValues = { ...values };
-        cloneValues.slug = slugify(values.slug || values.title);
-    };
+    const watchHot = watch("hot");
 
     const { image, progress, handleSelectImage, handleDeleteImage } =
         useFirebaseImage(setValue, getValues);
+    const [categories, setCategories] = useState([]);
+
+    const addPostHandler = async (values) => {
+        const cloneValues = { ...values };
+        cloneValues.slug = slugify(values.slug || values.title, {
+            lower: true,
+        });
+        const colRef = collection(db, "posts");
+        await addDoc(colRef, {
+            ...cloneValues,
+            image,
+            userId: userInfo.uid,
+        });
+
+        toast.success("Create new post sucessfully");
+    };
+
+    useEffect(() => {
+        async function getData() {
+            const colRef = collection(db, "categories");
+            const q = query(colRef, where("status", "==", 1));
+            const querySnapshot = await getDocs(q);
+            let results = [];
+            querySnapshot.forEach((doc) => {
+                results.push({
+                    id: doc.id,
+                    ...doc.data(),
+                });
+            });
+            setCategories(results);
+        }
+        getData();
+    }, []);
 
     return (
         <PostAddNewStyles>
@@ -65,6 +107,36 @@ function PostAddNew() {
                             progress={progress}
                             image={image}
                         ></ImageUpload>
+                    </Field>
+                    <Field>
+                        <Label>Category</Label>
+                        <Dropdown>
+                            <Select placeholder="Select the category"></Select>
+                            <List>
+                                {categories.length > 0 &&
+                                    categories.map((item) => (
+                                        <Option
+                                            key={item.id}
+                                            onClick={() =>
+                                                setValue("categoryId", item.id)
+                                            }
+                                        >
+                                            {item.name}
+                                        </Option>
+                                    ))}
+                            </List>
+                        </Dropdown>
+                    </Field>
+                </div>
+                <div className="grid grid-cols-2 gap-x-10 mb-10">
+                    <Field>
+                        <Label>Feature post</Label>
+                        <Toggle
+                            on={watchHot === true}
+                            onClick={() => {
+                                setValue("hot", !watchHot);
+                            }}
+                        ></Toggle>
                     </Field>
                     <Field>
                         <Label>Status</Label>
@@ -101,20 +173,6 @@ function PostAddNew() {
                             </Radio>
                         </div>
                     </Field>
-                    <Field>
-                        <Label htmlFor="author">Author</Label>
-                        <Input
-                            control={control}
-                            placeholder="Find the author"
-                            name="author"
-                        ></Input>
-                    </Field>
-                </div>
-                <div className="grid grid-cols-2 gap-x-10 mb-10">
-                    <Field>
-                        <Label>Category</Label>
-                    </Field>
-                    <Field></Field>
                 </div>
                 <Button type="submit" className="mx-auto">
                     Add new post
