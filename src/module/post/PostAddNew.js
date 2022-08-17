@@ -25,16 +25,18 @@ const PostAddNewStyles = styled.div``;
 function PostAddNew() {
     const { userInfo } = useAuth();
 
-    const { control, watch, setValue, handleSubmit, getValues } = useForm({
-        mode: "onChange",
-        defaultValues: {
-            title: "",
-            slug: "",
-            status: postStatus.PENDING,
-            hot: false,
-            categoryId: "",
-        },
-    });
+    const { control, watch, setValue, handleSubmit, getValues, reset } =
+        useForm({
+            mode: "onChange",
+            defaultValues: {
+                title: "",
+                slug: "",
+                status: postStatus.PENDING,
+                hot: false,
+                categoryId: "",
+                image: "",
+            },
+        });
 
     const watchStatus = watch("status");
     const watchHot = watch("hot");
@@ -42,6 +44,7 @@ function PostAddNew() {
     const { image, progress, handleSelectImage, handleDeleteImage } =
         useFirebaseImage(setValue, getValues);
     const [categories, setCategories] = useState([]);
+    const [selectCategory, setSelectCategory] = useState();
 
     const addPostHandler = async (values) => {
         const cloneValues = { ...values };
@@ -56,6 +59,15 @@ function PostAddNew() {
         });
 
         toast.success("Create new post sucessfully");
+        reset({
+            title: "",
+            slug: "",
+            status: postStatus.PENDING,
+            hot: false,
+            categoryId: "",
+            image: "",
+        });
+        setSelectCategory(null);
     };
 
     useEffect(() => {
@@ -74,6 +86,11 @@ function PostAddNew() {
         }
         getData();
     }, []);
+
+    const handleClickOption = (item) => {
+        setValue("categoryId", item.id);
+        setSelectCategory(item);
+    };
 
     return (
         <PostAddNewStyles>
@@ -118,7 +135,7 @@ function PostAddNew() {
                                         <Option
                                             key={item.id}
                                             onClick={() =>
-                                                setValue("categoryId", item.id)
+                                                handleClickOption(item)
                                             }
                                         >
                                             {item.name}
@@ -126,6 +143,11 @@ function PostAddNew() {
                                     ))}
                             </List>
                         </Dropdown>
+                        {selectCategory?.name && (
+                            <span className="inline-block p-3 rounded-lg bg-green-50 text-green-600 font-medium">
+                                {selectCategory?.name}
+                            </span>
+                        )}
                     </Field>
                 </div>
                 <div className="grid grid-cols-2 gap-x-10 mb-10">
