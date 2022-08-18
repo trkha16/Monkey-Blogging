@@ -72,8 +72,14 @@ export default function useFirebaseImage(setValue, getValues) {
             });
     };
 
+    const handleResetUpload = () => {
+        setImage("");
+        setProgress(0);
+    };
+
     return {
         image,
+        handleResetUpload,
         progress,
         handleSelectImage,
         handleDeleteImage,

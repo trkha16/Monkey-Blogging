@@ -1,11 +1,11 @@
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { db } from "../../firebase/firebase-config";
-import PostCategory from "./PostCategory";
-import PostImage from "./PostImage";
-import PostMeta from "./PostMeta";
 import PostTitle from "./PostTitle";
+import PostMeta from "./PostMeta";
+import PostImage from "./PostImage";
+import PostCategory from "./PostCategory";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebase-config";
 
 const PostFeatureItemStyles = styled.div`
     width: 100%;
@@ -82,6 +82,11 @@ function PostFeatureItem({ data }) {
 
     if (!data || !data.id) return null;
 
+    const date = data.createdAt
+        ? new Date(data?.createdAt?.seconds * 1000)
+        : new Date();
+    const formatDate = new Date(date).toLocaleDateString("vi-VI");
+
     return (
         <PostFeatureItemStyles>
             <PostImage
@@ -95,7 +100,10 @@ function PostFeatureItem({ data }) {
                     {category?.name && (
                         <PostCategory>{category.name}</PostCategory>
                     )}
-                    <PostMeta authorName={user?.fullname}></PostMeta>
+                    <PostMeta
+                        authorName={user?.fullname}
+                        date={formatDate}
+                    ></PostMeta>
                 </div>
                 <PostTitle size="big">{data.title}</PostTitle>
             </div>

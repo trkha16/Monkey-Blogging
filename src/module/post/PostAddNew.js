@@ -11,7 +11,14 @@ import ImageUpload from "../../components/image/ImageUpload";
 import useFirebaseImage from "../../hooks/useFirebaseImage";
 import Toggle from "../../components/toggle/Toggle";
 import { useEffect, useState } from "react";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    getDocs,
+    query,
+    serverTimestamp,
+    where,
+} from "firebase/firestore";
 import { db } from "../../firebase/firebase-config";
 import Dropdown from "../../components/dropdown/Dropdown";
 import Select from "../../components/dropdown/Select";
@@ -19,6 +26,7 @@ import List from "../../components/dropdown/List";
 import Option from "../../components/dropdown/Option";
 import { useAuth } from "../../contexts/auth-context";
 import { toast } from "react-toastify";
+import DashboardHeading from "../dashboard/DashboardHeading";
 
 const PostAddNewStyles = styled.div``;
 
@@ -41,33 +49,48 @@ function PostAddNew() {
     const watchStatus = watch("status");
     const watchHot = watch("hot");
 
-    const { image, progress, handleSelectImage, handleDeleteImage } =
-        useFirebaseImage(setValue, getValues);
+    const {
+        image,
+        handleResetUpload,
+        progress,
+        handleSelectImage,
+        handleDeleteImage,
+    } = useFirebaseImage(setValue, getValues);
     const [categories, setCategories] = useState([]);
     const [selectCategory, setSelectCategory] = useState();
+    const [loading, setLoading] = useState(false);
 
     const addPostHandler = async (values) => {
-        const cloneValues = { ...values };
-        cloneValues.slug = slugify(values.slug || values.title, {
-            lower: true,
-        });
-        const colRef = collection(db, "posts");
-        await addDoc(colRef, {
-            ...cloneValues,
-            image,
-            userId: userInfo.uid,
-        });
+        setLoading(true);
+        try {
+            const cloneValues = { ...values };
+            cloneValues.slug = slugify(values.slug || values.title, {
+                lower: true,
+            });
+            const colRef = collection(db, "posts");
+            await addDoc(colRef, {
+                ...cloneValues,
+                image,
+                userId: userInfo.uid,
+                createdAt: serverTimestamp(),
+            });
 
-        toast.success("Create new post sucessfully");
-        reset({
-            title: "",
-            slug: "",
-            status: postStatus.PENDING,
-            hot: false,
-            categoryId: "",
-            image: "",
-        });
-        setSelectCategory(null);
+            toast.success("Create new post sucessfully");
+            reset({
+                title: "",
+                slug: "",
+                status: postStatus.PENDING,
+                hot: false,
+                categoryId: "",
+                image: "",
+            });
+            setSelectCategory(null);
+            handleResetUpload();
+        } catch (error) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -87,6 +110,10 @@ function PostAddNew() {
         getData();
     }, []);
 
+    useEffect(() => {
+        document.title = "Add new post";
+    }, []);
+
     const handleClickOption = (item) => {
         setValue("categoryId", item.id);
         setSelectCategory(item);
@@ -94,7 +121,10 @@ function PostAddNew() {
 
     return (
         <PostAddNewStyles>
-            <h1 className="dashboard-heading">Add new post</h1>
+            <DashboardHeading
+                title="Add post"
+                desc="Add new post"
+            ></DashboardHeading>
             <form onSubmit={handleSubmit(addPostHandler)}>
                 <div className="grid grid-cols-2 gap-x-10 mb-10">
                     <Field>
@@ -196,7 +226,7 @@ function PostAddNew() {
                         </div>
                     </Field>
                 </div>
-                <Button type="submit" className="mx-auto">
+                <Button type="submit" className="mx-auto" disabled={loading}>
                     Add new post
                 </Button>
             </form>
