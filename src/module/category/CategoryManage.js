@@ -35,6 +35,7 @@ function CategoryManage() {
                   where("name", "<=", filter + "utf8")
               )
             : colRef;
+
         onSnapshot(q, (snapshot) => {
             let results = [];
             snapshot.forEach((doc) => {

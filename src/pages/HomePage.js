@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import Layout from "../components/layout/Layout";
 import HomeBanner from "../module/home/HomeBanner";
@@ -7,6 +8,10 @@ import HomeNewest from "../module/home/HomeNewest";
 const HomePageStyles = styled.div``;
 
 function HomePage() {
+    useEffect(() => {
+        document.title = "Monkey Blogging";
+    }, []);
+
     return (
         <HomePageStyles>
             <Layout>

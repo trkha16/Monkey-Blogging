@@ -50,12 +50,6 @@ const HeaderStyles = styled.header`
 function Header() {
     const { userInfo } = useAuth();
 
-    const getLastName = (name) => {
-        if (!name) return "User";
-        const length = name.split(" ").length;
-        return name.split(" ")[length - 1];
-    };
-
     return (
         <HeaderStyles>
             <div className="container">
@@ -119,17 +113,20 @@ function Header() {
                             style={{ maxWidth: "200px" }}
                             className="header-button"
                             height="56px"
-                            to="/sign-up"
+                            to="/sign-in"
                         >
-                            Sign Up
+                            Sign In
                         </Button>
                     ) : (
-                        <div className="header-auth">
-                            <span>Welcome back, </span>
-                            <strong className="text-primary">
-                                {getLastName(userInfo?.displayName)}
-                            </strong>
-                        </div>
+                        <Button
+                            type="button"
+                            style={{ maxWidth: "200px" }}
+                            className="header-button"
+                            height="56px"
+                            to="/dashboard"
+                        >
+                            Dashboard
+                        </Button>
                     )}
                 </div>
             </div>
