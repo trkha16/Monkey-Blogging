@@ -1,4 +1,11 @@
-import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+    collection,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import ActionDelete from "../../components/action/ActionDelete";
 import ActionEdit from "../../components/action/ActionEdit";
@@ -10,12 +17,25 @@ import { db } from "../../firebase/firebase-config";
 import { categoryStatus } from "../../utils/constants";
 import DashboardHeading from "../dashboard/DashboardHeading";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { debounce } from "lodash";
 
 function CategoryManage() {
+    const navigate = useNavigate();
+
+    const [filter, setFilter] = useState("");
+
     const [categoryList, setCategoryList] = useState([]);
     useEffect(() => {
         const colRef = collection(db, "categories");
-        onSnapshot(colRef, (snapshot) => {
+        const q = filter
+            ? query(
+                  colRef,
+                  where("name", ">=", filter),
+                  where("name", "<=", filter + "utf8")
+              )
+            : colRef;
+        onSnapshot(q, (snapshot) => {
             let results = [];
             snapshot.forEach((doc) => {
                 results.push({
@@ -25,7 +45,7 @@ function CategoryManage() {
             });
             setCategoryList(results);
         });
-    }, []);
+    }, [filter]);
 
     const handleDeleteCategory = async (docId) => {
         const colRef = doc(db, "categories", docId);
@@ -45,6 +65,10 @@ function CategoryManage() {
         });
     };
 
+    const handleInputChange = debounce((e) => {
+        setFilter(e.target.value);
+    }, 500);
+
     return (
         <div>
             <DashboardHeading title="Categories" desc="Manage your category">
@@ -52,6 +76,14 @@ function CategoryManage() {
                     Create category
                 </Button>
             </DashboardHeading>
+            <div className="mb-10 flex justify-end">
+                <input
+                    type="text"
+                    placeholder="Search category..."
+                    className="py-4 px-5 border border-gray-300 rounded-lg"
+                    onChange={handleInputChange}
+                />
+            </div>
             <Table>
                 <thead>
                     <tr>
@@ -90,7 +122,13 @@ function CategoryManage() {
                                 <td>
                                     <div className="flex items-center gap-x-3">
                                         <ActionView></ActionView>
-                                        <ActionEdit></ActionEdit>
+                                        <ActionEdit
+                                            onClick={() =>
+                                                navigate(
+                                                    `/manage/update-category?id=${item.id}`
+                                                )
+                                            }
+                                        ></ActionEdit>
                                         <ActionDelete
                                             onClick={() =>
                                                 handleDeleteCategory(item.id)

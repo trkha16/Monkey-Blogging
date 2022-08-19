@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const SidebarStyles = styled.div`
@@ -39,9 +39,16 @@ const SidebarStyles = styled.div`
 `;
 
 function Sidebar() {
+    const navigate = useNavigate();
+
     return (
         <SidebarStyles className="sidebar">
-            <div className="sidebar-logo">
+            <div
+                className="sidebar-logo cursor-pointer"
+                onClick={() => {
+                    navigate("/");
+                }}
+            >
                 <img srcSet="/logo.png 2x" alt="" />
                 <span>Mongkey Blogging</span>
             </div>
