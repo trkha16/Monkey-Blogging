@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import {
     addDoc,
     collection,
+    doc,
+    getDoc,
     getDocs,
     query,
     serverTimestamp,
@@ -41,8 +43,9 @@ function PostAddNew() {
                 slug: "",
                 status: postStatus.PENDING,
                 hot: false,
-                categoryId: "",
                 image: "",
+                category: {},
+                user: {},
             },
         });
 
@@ -60,6 +63,25 @@ function PostAddNew() {
     const [selectCategory, setSelectCategory] = useState();
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        async function fetchUserData() {
+            if (!userInfo.email) return;
+            const q = query(
+                collection(db, "users"),
+                where("email", "==", userInfo.email)
+            );
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                setValue("user", {
+                    id: doc.id,
+                    ...doc.data(),
+                });
+            });
+        }
+        fetchUserData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const addPostHandler = async (values) => {
         setLoading(true);
         try {
@@ -71,7 +93,6 @@ function PostAddNew() {
             await addDoc(colRef, {
                 ...cloneValues,
                 image,
-                userId: userInfo.uid,
                 createdAt: serverTimestamp(),
             });
 
@@ -81,8 +102,9 @@ function PostAddNew() {
                 slug: "",
                 status: postStatus.PENDING,
                 hot: false,
-                categoryId: "",
                 image: "",
+                category: {},
+                user: {},
             });
             setSelectCategory(null);
             handleResetUpload();
@@ -114,8 +136,13 @@ function PostAddNew() {
         document.title = "Add new post";
     }, []);
 
-    const handleClickOption = (item) => {
-        setValue("categoryId", item.id);
+    const handleClickOption = async (item) => {
+        const colRef = doc(db, "categories", item.id);
+        const docData = await getDoc(colRef);
+        setValue("category", {
+            id: docData.id,
+            ...docData.data(),
+        });
         setSelectCategory(item);
     };
 

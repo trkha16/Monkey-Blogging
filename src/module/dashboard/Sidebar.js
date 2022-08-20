@@ -1,6 +1,7 @@
 import { signOut } from "firebase/auth";
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Swal from "sweetalert2";
 import { auth } from "../../firebase/firebase-config";
 
 const SidebarStyles = styled.div`
@@ -185,7 +186,19 @@ const sidebarLinks = [
             </svg>
         ),
         onClick: () => {
-            signOut(auth);
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    signOut(auth);
+                }
+            });
         },
     },
 ];
