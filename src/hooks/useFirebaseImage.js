@@ -38,7 +38,7 @@ export default function useFirebaseImage(setValue, getValues) {
             },
             (error) => {
                 // Handle unsuccessful uploads
-                console.log("Error");
+                console.log(error);
             },
             () => {
                 // Handle successful uploads on complete

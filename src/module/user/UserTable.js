@@ -1,4 +1,4 @@
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ActionDelete from "../../components/action/ActionDelete";
@@ -7,6 +7,8 @@ import LabelStatus from "../../components/label/LabelStatus";
 import Table from "../../components/table/Table";
 import { db } from "../../firebase/firebase-config";
 import { userRole, userStatus } from "../../utils/constants";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 function UserTable() {
     const navigate = useNavigate();
@@ -51,6 +53,26 @@ function UserTable() {
             default:
                 break;
         }
+    };
+
+    const handleDeleteUser = async (user) => {
+        const colRef = doc(db, "users", user.id);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await deleteDoc(colRef);
+                //await deleteUser(user);
+                toast.success("Success");
+                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            }
+        });
     };
 
     return (
@@ -108,9 +130,9 @@ function UserTable() {
                                             }
                                         ></ActionEdit>
                                         <ActionDelete
-                                        // onClick={() =>
-                                        //     handleDeleteCategory(user.id)
-                                        // }
+                                            onClick={() =>
+                                                handleDeleteUser(user)
+                                            }
                                         ></ActionDelete>
                                     </div>
                                 </td>
