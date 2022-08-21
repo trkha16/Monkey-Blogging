@@ -73,18 +73,25 @@ function CategoryManage() {
     return (
         <div>
             <DashboardHeading title="Categories" desc="Manage your category">
-                <Button type="button" to="/manage/add-category">
-                    Create category
-                </Button>
+                <div className="flex gap-x-10">
+                    <div className="mb-10">
+                        <input
+                            type="text"
+                            placeholder="Search category..."
+                            className="py-4 px-5 border border-gray-300 rounded-lg"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <Button
+                        type="button"
+                        to="/manage/add-category"
+                        height="58px"
+                    >
+                        Create category
+                    </Button>
+                </div>
             </DashboardHeading>
-            <div className="mb-10 flex justify-end">
-                <input
-                    type="text"
-                    placeholder="Search category..."
-                    className="py-4 px-5 border border-gray-300 rounded-lg"
-                    onChange={handleInputChange}
-                />
-            </div>
+
             <Table>
                 <thead>
                     <tr>
@@ -99,7 +106,7 @@ function CategoryManage() {
                     {categoryList.length > 0 &&
                         categoryList.map((item) => (
                             <tr key={item.id}>
-                                <td>{item.id}</td>
+                                <td>{item.id.slice(0, 8) + "..."}</td>
                                 <td>{item.name}</td>
                                 <td>
                                     <span className="italic text-gray-400">

@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import ActionDelete from "../../components/action/ActionDelete";
 import ActionEdit from "../../components/action/ActionEdit";
 import ActionView from "../../components/action/ActionView";
+import Button from "../../components/button/Button";
 import Pagination from "../../components/pagination/Pagination";
 import Table from "../../components/table/Table";
 import { db } from "../../firebase/firebase-config";
@@ -71,20 +72,28 @@ const PostManage = () => {
 
     return (
         <div>
-            <DashboardHeading
-                title="All posts"
-                desc="Manage all posts"
-            ></DashboardHeading>
-            <div className="mb-10 flex justify-end">
-                <div className="w-full max-w-[300px]">
-                    <input
-                        type="text"
-                        className="w-full p-4 rounded-lg border border-solid border-gray-300"
-                        placeholder="Search post..."
-                        onChange={handleSearchPost}
-                    />
+            <DashboardHeading title="All posts" desc="Manage all posts">
+                <div className="flex gap-x-10">
+                    <div className="mb-10">
+                        <div className="w-full max-w-[300px]">
+                            <input
+                                type="text"
+                                className="w-full py-4 px-5 rounded-lg border border-solid border-gray-300"
+                                placeholder="Search post..."
+                                onChange={handleSearchPost}
+                            />
+                        </div>
+                    </div>
+                    <Button
+                        to="/manage/add-post"
+                        className="header-button"
+                        height="58px"
+                    >
+                        Write new post
+                    </Button>
                 </div>
-            </div>
+            </DashboardHeading>
+
             <Table>
                 <thead>
                     <tr>
@@ -142,7 +151,13 @@ const PostManage = () => {
                                                     navigate(`/${post.slug}`)
                                                 }
                                             ></ActionView>
-                                            <ActionEdit></ActionEdit>
+                                            <ActionEdit
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/manage/update-post?id=${post.id}`
+                                                    )
+                                                }
+                                            ></ActionEdit>
                                             <ActionDelete
                                                 onClick={() =>
                                                     handleDeletePost(post.id)

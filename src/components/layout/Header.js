@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/auth-context";
 
 const HeaderStyles = styled.header`
     padding: 40px 0;
+    width: 100%;
     .header-main {
         display: flex;
         align-items: center;
