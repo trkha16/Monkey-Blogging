@@ -70,7 +70,7 @@ function CategoryAddNew() {
             >
                 <div className="form-layout">
                     <Field>
-                        <Label>Name</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input
                             control={control}
                             name="name"
@@ -78,7 +78,7 @@ function CategoryAddNew() {
                         ></Input>
                     </Field>
                     <Field>
-                        <Label>Slug</Label>
+                        <Label htmlFor="slug">Slug</Label>
                         <Input
                             control={control}
                             name="slug"

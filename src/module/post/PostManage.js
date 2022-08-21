@@ -70,6 +70,10 @@ const PostManage = () => {
         setFilter(e.target.value);
     }, 500);
 
+    useEffect(() => {
+        document.title = "Post";
+    }, []);
+
     return (
         <div>
             <DashboardHeading title="All posts" desc="Manage all posts">

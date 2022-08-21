@@ -14,6 +14,7 @@ import useFirebaseImage from "../../hooks/useFirebaseImage";
 import { userRole, userStatus } from "../../utils/constants";
 import DashboardHeading from "../dashboard/DashboardHeading";
 import { toast } from "react-toastify";
+import InputPasswordToggle from "../../components/input/InputPasswordToggle";
 
 function UserUpdate() {
     const {
@@ -85,7 +86,7 @@ function UserUpdate() {
                 </div>
                 <div className="form-layout">
                     <Field>
-                        <Label>Fullname</Label>
+                        <Label htmlFor="fullname">Fullname</Label>
                         <Input
                             name="fullname"
                             placeholder="Enter your fullname"
@@ -93,7 +94,7 @@ function UserUpdate() {
                         ></Input>
                     </Field>
                     <Field>
-                        <Label>Username</Label>
+                        <Label htmlFor="username">Username</Label>
                         <Input
                             name="username"
                             placeholder="Enter your username"
@@ -103,7 +104,7 @@ function UserUpdate() {
                 </div>
                 <div className="form-layout">
                     <Field>
-                        <Label>Email</Label>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                             name="email"
                             type="email"
@@ -112,13 +113,10 @@ function UserUpdate() {
                         ></Input>
                     </Field>
                     <Field>
-                        <Label>Password</Label>
-                        <Input
-                            type="password"
-                            name="password"
-                            placeholder="Enter your password"
+                        <Label htmlFor="password">Password</Label>
+                        <InputPasswordToggle
                             control={control}
-                        ></Input>
+                        ></InputPasswordToggle>
                     </Field>
                 </div>
                 <div className="form-layout">

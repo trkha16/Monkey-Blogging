@@ -123,7 +123,12 @@ function PostDetailsPage() {
     const { user } = postInfo;
 
     if (!slug) return <NotFoundPage></NotFoundPage>;
-    if (!postInfo.title) return null;
+    if (!postInfo.title) return <NotFoundPage></NotFoundPage>;
+
+    const date = postInfo.createdAt
+        ? new Date(postInfo?.createdAt?.seconds * 1000)
+        : new Date();
+    const formatDate = new Date(date).toLocaleDateString("vi-VI");
 
     return (
         <PostDetailsPageStyles>
@@ -139,7 +144,10 @@ function PostDetailsPage() {
                                 {postInfo.category?.name}
                             </PostCategory>
                             <h1 className="post-heading">{postInfo.title}</h1>
-                            <PostMeta></PostMeta>
+                            <PostMeta
+                                authorName={user?.fullname}
+                                date={formatDate}
+                            ></PostMeta>
                         </div>
                     </div>
                     <div className="post-content">

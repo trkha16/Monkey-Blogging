@@ -61,7 +61,11 @@ function CategoryManage() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 await deleteDoc(colRef);
-                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+                Swal.fire(
+                    "Deleted!",
+                    "Your category has been deleted.",
+                    "success"
+                );
             }
         });
     };
@@ -69,6 +73,10 @@ function CategoryManage() {
     const handleInputChange = debounce((e) => {
         setFilter(e.target.value);
     }, 500);
+
+    useEffect(() => {
+        document.title = "Category";
+    }, []);
 
     return (
         <div>
