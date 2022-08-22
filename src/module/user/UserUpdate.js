@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import InputPasswordToggle from "../../components/input/InputPasswordToggle";
 import Textarea from "../../components/textarea/Textarea";
 import { yupResolver } from "@hookform/resolvers/yup";
+import slugify from "slugify";
 
 const schema = yup.object({
     fullname: yup.string().required("Please enter your fullname"),
@@ -71,8 +72,14 @@ function UserUpdate() {
 
     const handleUpdateUser = async (values) => {
         if (!isValid) return;
-        console.log("values ", values);
         try {
+            values.slug = slugify(values.slug || values.fullname, {
+                lower: true,
+            });
+            values.username = slugify(values.username || values.fullname, {
+                lower: true,
+            });
+            console.log("values", values);
             const colRef = doc(db, "users", userId);
             await updateDoc(colRef, {
                 ...values,

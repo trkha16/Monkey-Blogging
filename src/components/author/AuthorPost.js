@@ -1,8 +1,4 @@
-import { useAuth } from "../../contexts/auth-context";
-
-function AuthorPost() {
-    const { userInfo } = useAuth();
-
+function AuthorPost({ userInfo }) {
     return (
         <div className="author">
             <div className="author-image">

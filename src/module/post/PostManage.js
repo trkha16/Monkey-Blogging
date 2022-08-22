@@ -15,8 +15,10 @@ import ActionDelete from "../../components/action/ActionDelete";
 import ActionEdit from "../../components/action/ActionEdit";
 import ActionView from "../../components/action/ActionView";
 import Button from "../../components/button/Button";
+import LabelStatus from "../../components/label/LabelStatus";
 import Table from "../../components/table/Table";
 import { db } from "../../firebase/firebase-config";
+import { postStatus } from "../../utils/constants";
 import DashboardHeading from "../dashboard/DashboardHeading";
 
 const PostManage = () => {
@@ -104,6 +106,7 @@ const PostManage = () => {
                         <th>Post</th>
                         <th>Category</th>
                         <th>Author</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -146,6 +149,26 @@ const PostManage = () => {
                                         <span className="text-gray-500">
                                             {post.user?.username}
                                         </span>
+                                    </td>
+                                    <td>
+                                        {Number(post.status) ===
+                                            postStatus.APPROVED && (
+                                            <LabelStatus type="success">
+                                                Approved
+                                            </LabelStatus>
+                                        )}
+                                        {Number(post.status) ===
+                                            postStatus.PENDING && (
+                                            <LabelStatus type="warning">
+                                                Pending
+                                            </LabelStatus>
+                                        )}
+                                        {Number(post.status) ===
+                                            postStatus.REJECTED && (
+                                            <LabelStatus type="danger">
+                                                Rejected
+                                            </LabelStatus>
+                                        )}
                                     </td>
                                     <td>
                                         <div className="flex items-center gap-x-3 text-gray-500">

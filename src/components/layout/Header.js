@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Button from "../button/Button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 
 const HeaderStyles = styled.header`
@@ -51,6 +51,8 @@ const HeaderStyles = styled.header`
 function Header() {
     const { userInfo } = useAuth();
 
+    const navigate = useNavigate();
+
     return (
         <HeaderStyles>
             <div className="container">
@@ -65,9 +67,12 @@ function Header() {
                     <ul className="menu">
                         {menuLinks.map((item) => (
                             <li className="menu-item" key={item.title}>
-                                <NavLink to={item.url} className="menu-link">
+                                <div
+                                    className="menu-link cursor-pointer"
+                                    onClick={() => navigate(`${item.url}`)}
+                                >
                                     {item.title}
-                                </NavLink>
+                                </div>
                             </li>
                         ))}
                     </ul>

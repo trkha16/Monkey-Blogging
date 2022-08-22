@@ -3,6 +3,9 @@ import PostTitle from "./PostTitle";
 import PostMeta from "./PostMeta";
 import PostImage from "./PostImage";
 import PostCategory from "./PostCategory";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebase-config";
 
 const PostFeatureItemStyles = styled.div`
     width: 100%;
@@ -48,8 +51,6 @@ const PostFeatureItemStyles = styled.div`
 `;
 
 function PostFeatureItem({ data }) {
-    if (!data || !data.id) return null;
-
     const date = data.createdAt
         ? new Date(data?.createdAt?.seconds * 1000)
         : new Date();
@@ -57,7 +58,18 @@ function PostFeatureItem({ data }) {
 
     const { category, user } = data;
 
-    console.log("data", data.id);
+    const [userInfo, setUserInfo] = useState();
+    useEffect(() => {
+        async function fetchUserData() {
+            if (!user?.id) return;
+            const docRef = doc(db, "users", user?.id);
+            const docSnapshot = await getDoc(docRef);
+            setUserInfo(docSnapshot.data());
+        }
+        fetchUserData();
+    }, [user?.id]);
+
+    if (!data || !data.id) return null;
 
     return (
         <PostFeatureItemStyles>
@@ -73,7 +85,7 @@ function PostFeatureItem({ data }) {
                         <PostCategory>{category.name}</PostCategory>
                     )}
                     <PostMeta
-                        authorName={user?.fullname}
+                        authorName={userInfo?.fullname}
                         date={formatDate}
                     ></PostMeta>
                 </div>

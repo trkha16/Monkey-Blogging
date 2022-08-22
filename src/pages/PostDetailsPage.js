@@ -8,7 +8,14 @@ import PostItem from "../module/post/PostItem";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+    collection,
+    doc,
+    getDoc,
+    onSnapshot,
+    query,
+    where,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import parse from "html-react-parser";
 import AuthorPost from "../components/author/AuthorPost";
@@ -122,7 +129,16 @@ function PostDetailsPage() {
     }, [slug]);
 
     const { user } = postInfo;
-    console.log(user);
+    const [userInfo, setUserInfo] = useState();
+    useEffect(() => {
+        async function fetchUserData() {
+            if (!user?.id) return;
+            const docRef = doc(db, "users", user?.id);
+            const docSnapshot = await getDoc(docRef);
+            setUserInfo(docSnapshot.data());
+        }
+        fetchUserData();
+    }, [user?.id]);
 
     const date = postInfo.createdAt
         ? new Date(postInfo?.createdAt?.seconds * 1000)
@@ -147,7 +163,7 @@ function PostDetailsPage() {
                             </PostCategory>
                             <h1 className="post-heading">{postInfo.title}</h1>
                             <PostMeta
-                                authorName={user?.fullname}
+                                authorName={userInfo?.fullname}
                                 date={formatDate}
                             ></PostMeta>
                         </div>
@@ -156,7 +172,7 @@ function PostDetailsPage() {
                         <div className="entry-content">
                             {parse(postInfo.content || "")}
                         </div>
-                        <AuthorPost></AuthorPost>
+                        <AuthorPost userInfo={userInfo}></AuthorPost>
                     </div>
                     <div className="post-related">
                         <Heading>Bài viết liên quan</Heading>
