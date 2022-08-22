@@ -11,6 +11,7 @@ import ImageUpload from "../../components/image/ImageUpload";
 import useFirebaseImage from "../../hooks/useFirebaseImage";
 import ReactQuill, { Quill } from "react-quill";
 import axios from "axios";
+import * as yup from "yup";
 import Toggle from "../../components/toggle/Toggle";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -33,27 +34,40 @@ import Option from "../../components/dropdown/Option";
 import { useAuth } from "../../contexts/auth-context";
 import { toast } from "react-toastify";
 import DashboardHeading from "../dashboard/DashboardHeading";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 Quill.register("modules/imageUploader", ImageUploader);
 
 const PostAddNewStyles = styled.div``;
 
+const schema = yup.object({
+    title: yup.string().required("Please enter the title"),
+});
+
 function PostAddNew() {
     const { userInfo } = useAuth();
 
-    const { control, watch, setValue, handleSubmit, getValues, reset } =
-        useForm({
-            mode: "onChange",
-            defaultValues: {
-                title: "",
-                slug: "",
-                status: postStatus.PENDING,
-                hot: false,
-                image: "",
-                category: {},
-                user: {},
-            },
-        });
+    const {
+        control,
+        watch,
+        setValue,
+        handleSubmit,
+        getValues,
+        reset,
+        formState: { errors, isValid, isSubmitting },
+    } = useForm({
+        mode: "onChange",
+        defaultValues: {
+            title: "",
+            slug: "",
+            status: postStatus.PENDING,
+            hot: false,
+            image: "",
+            category: {},
+            user: {},
+        },
+        resolver: yupResolver(schema),
+    });
 
     const watchStatus = watch("status");
     const watchHot = watch("hot");
@@ -67,7 +81,6 @@ function PostAddNew() {
     } = useFirebaseImage(setValue, getValues);
     const [categories, setCategories] = useState([]);
     const [selectCategory, setSelectCategory] = useState();
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         async function fetchUserData() {
@@ -89,7 +102,7 @@ function PostAddNew() {
     }, []);
 
     const addPostHandler = async (values) => {
-        setLoading(true);
+        if (!isValid) return;
         try {
             const cloneValues = { ...values };
             cloneValues.slug = slugify(values.slug || values.title, {
@@ -117,9 +130,7 @@ function PostAddNew() {
             handleResetUpload();
             setContent("");
         } catch (error) {
-            setLoading(false);
-        } finally {
-            setLoading(false);
+            console.log(error);
         }
     };
 
@@ -183,6 +194,16 @@ function PostAddNew() {
         }),
         []
     );
+
+    useEffect(() => {
+        const arrErrors = Object.values(errors);
+        if (arrErrors.length > 0) {
+            toast.error(arrErrors[0]?.message, {
+                pauseOnHover: false,
+                delay: 0,
+            });
+        }
+    }, [errors]);
 
     return (
         <PostAddNewStyles>
@@ -303,7 +324,11 @@ function PostAddNew() {
                         </div>
                     </Field>
                 </div>
-                <Button type="submit" className="mx-auto" disabled={loading}>
+                <Button
+                    type="submit"
+                    className="mx-auto"
+                    disabled={isSubmitting}
+                >
                     Add new post
                 </Button>
             </form>

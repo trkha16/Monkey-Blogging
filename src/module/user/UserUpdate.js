@@ -8,6 +8,7 @@ import Field from "../../components/field/Field";
 import FieldCheckboxes from "../../components/field/FieldCheckboxes";
 import ImageUpload from "../../components/image/ImageUpload";
 import Input from "../../components/input/Input";
+import * as yup from "yup";
 import Label from "../../components/label/Label";
 import { db } from "../../firebase/firebase-config";
 import useFirebaseImage from "../../hooks/useFirebaseImage";
@@ -16,6 +17,19 @@ import DashboardHeading from "../dashboard/DashboardHeading";
 import { toast } from "react-toastify";
 import InputPasswordToggle from "../../components/input/InputPasswordToggle";
 import Textarea from "../../components/textarea/Textarea";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup.object({
+    fullname: yup.string().required("Please enter your fullname"),
+    email: yup
+        .string()
+        .required("Please enter your email address")
+        .email("Please enter valid email address"),
+    password: yup
+        .string()
+        .required("Please enter your password")
+        .min(8, "Your password must be at least 8 characters or greater"),
+});
 
 function UserUpdate() {
     const {
@@ -25,9 +39,10 @@ function UserUpdate() {
         getValues,
         watch,
         reset,
-        formState: { isSubmitting, isValid },
+        formState: { isSubmitting, isValid, errors },
     } = useForm({
         mode: "onChange",
+        resolver: yupResolver(schema),
     });
 
     const [params] = useSearchParams();
@@ -70,6 +85,16 @@ function UserUpdate() {
             toast.error("Error!!!");
         }
     };
+
+    useEffect(() => {
+        const arrErrors = Object.values(errors);
+        if (arrErrors.length > 0) {
+            toast.error(arrErrors[0]?.message, {
+                pauseOnHover: false,
+                delay: 0,
+            });
+        }
+    }, [errors]);
 
     if (!userId) return null;
 

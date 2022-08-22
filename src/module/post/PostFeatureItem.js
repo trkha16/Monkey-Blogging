@@ -57,6 +57,8 @@ function PostFeatureItem({ data }) {
 
     const { category, user } = data;
 
+    console.log("data", data.id);
+
     return (
         <PostFeatureItemStyles>
             <PostImage
@@ -75,7 +77,13 @@ function PostFeatureItem({ data }) {
                         date={formatDate}
                     ></PostMeta>
                 </div>
-                <PostTitle size="big">{data.title}</PostTitle>
+                <PostTitle
+                    size="big"
+                    className="inline-block"
+                    to={`/${data.slug}`}
+                >
+                    {data.title}
+                </PostTitle>
             </div>
         </PostFeatureItemStyles>
     );

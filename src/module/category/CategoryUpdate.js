@@ -1,6 +1,7 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import slugify from "slugify";
 import Button from "../../components/button/Button";
@@ -12,6 +13,11 @@ import { toast } from "react-toastify";
 import { db } from "../../firebase/firebase-config";
 import { categoryStatus } from "../../utils/constants";
 import DashboardHeading from "../dashboard/DashboardHeading";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup.object({
+    name: yup.string().required("Please enter the category name"),
+});
 
 function CategoryUpdate() {
     const {
@@ -19,10 +25,11 @@ function CategoryUpdate() {
         handleSubmit,
         watch,
         reset,
-        formState: { isSubmitting },
+        formState: { isSubmitting, isValid, errors },
     } = useForm({
         mode: "onChange",
         defaultValues: {},
+        resolver: yupResolver(schema),
     });
 
     const navigate = useNavigate();
@@ -46,6 +53,7 @@ function CategoryUpdate() {
     const watchStatus = watch("status");
 
     const handleUpdateCategory = async (values) => {
+        if (!isValid) return;
         const colRef = doc(db, "categories", categoryId);
         await updateDoc(colRef, {
             name: values.name,
@@ -55,6 +63,16 @@ function CategoryUpdate() {
         toast.success("Update successfully!");
         navigate("/manage/category");
     };
+
+    useEffect(() => {
+        const arrErrors = Object.values(errors);
+        if (arrErrors.length > 0) {
+            toast.error(arrErrors[0]?.message, {
+                pauseOnHover: false,
+                delay: 0,
+            });
+        }
+    }, [errors]);
 
     if (!categoryId) return null;
 

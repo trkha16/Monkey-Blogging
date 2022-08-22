@@ -124,7 +124,7 @@ function Header() {
                             style={{ maxWidth: "200px" }}
                             className="header-button"
                             height="56px"
-                            to="/dashboard"
+                            to="/manage/post"
                         >
                             Dashboard
                         </Button>

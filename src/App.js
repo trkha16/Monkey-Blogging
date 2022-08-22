@@ -6,12 +6,9 @@ import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PostDetailsPage from "./pages/PostDetailsPage";
 import DashboardLayout from "./module/dashboard/DashboardLayout";
-import DashboardPage from "./pages/DashboardPage";
 import PostManage from "./module/post/PostManage";
 import PostAddNew from "./module/post/PostAddNew";
 import CategoryAddNew from "./module/category/CategoryAddNew";
-import UserAddNew from "./module/user/UserAddNew";
-import UserProfile from "./module/user/UserProfile";
 import CategoryManage from "./module/category/CategoryManage";
 import CategoryUpdate from "./module/category/CategoryUpdate";
 import UserManage from "./module/user/UserManage";
@@ -42,10 +39,6 @@ function App() {
                     ></Route>
                     <Route element={<DashboardLayout></DashboardLayout>}>
                         <Route
-                            path="/dashboard"
-                            element={<DashboardPage></DashboardPage>}
-                        ></Route>
-                        <Route
                             path="/manage/post"
                             element={<PostManage></PostManage>}
                         ></Route>
@@ -73,17 +66,10 @@ function App() {
                             path="/manage/user"
                             element={<UserManage></UserManage>}
                         ></Route>
-                        <Route
-                            path="/manage/add-user"
-                            element={<UserAddNew></UserAddNew>}
-                        ></Route>
+
                         <Route
                             path="/manage/update-user"
                             element={<UserUpdate></UserUpdate>}
-                        ></Route>
-                        <Route
-                            path="/profile"
-                            element={<UserProfile></UserProfile>}
                         ></Route>
                     </Route>
                 </Routes>

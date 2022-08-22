@@ -26,12 +26,18 @@ import { postStatus } from "../../utils/constants";
 import ReactQuill, { Quill } from "react-quill";
 import DashboardHeading from "../dashboard/DashboardHeading";
 import { toast } from "react-toastify";
+import * as yup from "yup";
 import "react-quill/dist/quill.snow.css";
 import { useMemo } from "react";
 import axios from "axios";
 import useFirebaseImage from "../../hooks/useFirebaseImage";
 import ImageUpload from "../../components/image/ImageUpload";
+import { yupResolver } from "@hookform/resolvers/yup";
 Quill.register("modules/imageUploader", ImageUploader);
+
+const schema = yup.object({
+    title: yup.string().required("Please enter the title"),
+});
 
 const PostUpdate = () => {
     const [params] = useSearchParams();
@@ -39,10 +45,18 @@ const PostUpdate = () => {
 
     const [content, setContent] = useState("");
 
-    const { control, handleSubmit, setValue, watch, reset, getValues } =
-        useForm({
-            mode: "onChange",
-        });
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        watch,
+        reset,
+        getValues,
+        formState: { errors, isSubmitting, isValid },
+    } = useForm({
+        mode: "onChange",
+        resolver: yupResolver(schema),
+    });
 
     const watchHot = watch("hot");
     const watchStatus = watch("status");
@@ -87,6 +101,16 @@ const PostUpdate = () => {
         getCategoriesData();
     }, []);
 
+    useEffect(() => {
+        const arrErrors = Object.values(errors);
+        if (arrErrors.length > 0) {
+            toast.error(arrErrors[0]?.message, {
+                pauseOnHover: false,
+                delay: 0,
+            });
+        }
+    }, [errors]);
+
     const [selectCategory, setSelectCategory] = useState();
     const handleClickOption = async (item) => {
         const colRef = doc(db, "categories", item.id);
@@ -99,6 +123,7 @@ const PostUpdate = () => {
     };
 
     const updatePostHandler = async (values) => {
+        if (!isValid) return;
         const docRef = doc(db, "posts", postId);
         await updateDoc(docRef, {
             ...values,
@@ -255,7 +280,11 @@ const PostUpdate = () => {
                         </div>
                     </Field>
                 </div>
-                <Button type="submit" className="mx-auto">
+                <Button
+                    type="submit"
+                    className="mx-auto"
+                    disabled={isSubmitting}
+                >
                     Update post
                 </Button>
             </form>

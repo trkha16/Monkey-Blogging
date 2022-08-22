@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import Button from "../../components/button/Button";
 import Radio from "../../components/checkbox/Radio";
+import * as yup from "yup";
 import slugify from "slugify";
 import Field from "../../components/field/Field";
 import Input from "../../components/input/Input";
@@ -10,6 +11,12 @@ import { categoryStatus } from "../../utils/constants";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { db } from "../../firebase/firebase-config";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
+
+const schema = yup.object({
+    name: yup.string().required("Please enter the category name"),
+});
 
 function CategoryAddNew() {
     const {
@@ -17,7 +24,7 @@ function CategoryAddNew() {
         handleSubmit,
         watch,
         reset,
-        formState: { isValid, isSubmitting },
+        formState: { isValid, isSubmitting, errors },
     } = useForm({
         mode: "onChange",
         defaultValues: {
@@ -26,6 +33,7 @@ function CategoryAddNew() {
             status: 1,
             createdAt: new Date(),
         },
+        resolver: yupResolver(schema),
     });
 
     const handleAddNewCategory = async (values) => {
@@ -57,6 +65,20 @@ function CategoryAddNew() {
     };
 
     const watchStatus = watch("status");
+
+    useEffect(() => {
+        const arrErrors = Object.values(errors);
+        if (arrErrors.length > 0) {
+            toast.error(arrErrors[0]?.message, {
+                pauseOnHover: false,
+                delay: 0,
+            });
+        }
+    }, [errors]);
+
+    useEffect(() => {
+        document.title = "Add new category";
+    }, []);
 
     return (
         <div>

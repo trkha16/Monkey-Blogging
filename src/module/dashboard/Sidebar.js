@@ -8,6 +8,17 @@ const SidebarStyles = styled.div`
     background-color: #ffffff;
     box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
     border-radius: 12px;
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        gap: 0 20px;
+        margin-bottom: 20px;
+        padding: 20px 20px 0;
+        img {
+            max-width: 40px;
+        }
+    }
     .menu-item {
         display: flex;
         align-items: center;
