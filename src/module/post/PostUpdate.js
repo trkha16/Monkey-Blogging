@@ -15,6 +15,7 @@ import Radio from "../../components/checkbox/Radio";
 import Dropdown from "../../components/dropdown/Dropdown";
 import List from "../../components/dropdown/List";
 import Option from "../../components/dropdown/Option";
+import ImageUploader from "quill-image-uploader";
 import Select from "../../components/dropdown/Select";
 import Field from "../../components/field/Field";
 import Input from "../../components/input/Input";
@@ -22,10 +23,13 @@ import Label from "../../components/label/Label";
 import Toggle from "../../components/toggle/Toggle";
 import { db } from "../../firebase/firebase-config";
 import { postStatus } from "../../utils/constants";
+import ReactQuill, { Quill } from "react-quill";
 import DashboardHeading from "../dashboard/DashboardHeading";
-import ReactQuill from "react-quill";
 import { toast } from "react-toastify";
 import "react-quill/dist/quill.snow.css";
+import { useMemo } from "react";
+import axios from "axios";
+Quill.register("modules/imageUploader", ImageUploader);
 
 const PostUpdate = () => {
     const [params] = useSearchParams();
@@ -86,10 +90,40 @@ const PostUpdate = () => {
     const updatePostHandler = async (values) => {
         const docRef = doc(db, "posts", postId);
         await updateDoc(docRef, {
+            ...values,
             content,
         });
         toast.success("Success");
     };
+
+    const modules = useMemo(
+        () => ({
+            toolbar: [
+                ["bold", "italic", "underline", "strike"],
+                ["blockquote"],
+                [{ header: 1 }, { header: 2 }], // custom button values
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                ["link", "image"],
+            ],
+            imageUploader: {
+                upload: async (file) => {
+                    const bodyFormData = new FormData();
+                    bodyFormData.append("image", file);
+                    const response = await axios({
+                        method: "post",
+                        url: "https://api.imgbb.com/1/upload?key=4ead2467144f52e461408662982ac5a8",
+                        data: bodyFormData,
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
+                    return response.data.data.url;
+                },
+            },
+        }),
+        []
+    );
 
     if (!postId) return null;
 
@@ -157,6 +191,7 @@ const PostUpdate = () => {
                         <ReactQuill
                             className="w-full entry-content"
                             theme="snow"
+                            modules={modules}
                             value={content}
                             onChange={setContent}
                         />
