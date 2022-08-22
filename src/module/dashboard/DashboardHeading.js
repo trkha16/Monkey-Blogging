@@ -3,7 +3,7 @@ function DashboardHeading({ title = "", desc = "", children }) {
         <div className="mb-10 flex items-center justify-between">
             <div>
                 <h1 className="dashboard-heading">{title}</h1>
-                <p className="dashboard-short-desc">{desc}</p>
+                <p className="dashboard-short-desc"></p>
             </div>
             {children}
         </div>

@@ -4,6 +4,7 @@ import styled from "styled-components";
 const TextareaStyles = styled.div`
     width: 100%;
     position: relative;
+    margin-bottom: 40px;
     textarea {
         width: 100%;
         padding: 16px 20px;

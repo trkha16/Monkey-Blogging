@@ -52,7 +52,12 @@ function DashboardHeader() {
                     <span>Hello, </span>
                     <strong>{userInfo.fullname}</strong>
                 </div>
-                <div className="header-avatar">
+                <div
+                    className="header-avatar cursor-pointer"
+                    onClick={() =>
+                        navigate(`/manage/update-user?id=${userInfo.uid}`)
+                    }
+                >
                     <img src={userInfo?.avatar} alt="" />
                 </div>
             </div>

@@ -9,8 +9,10 @@ import Label from "../../components/label/Label";
 import { postStatus } from "../../utils/constants";
 import ImageUpload from "../../components/image/ImageUpload";
 import useFirebaseImage from "../../hooks/useFirebaseImage";
+import ReactQuill, { Quill } from "react-quill";
+import axios from "axios";
 import Toggle from "../../components/toggle/Toggle";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     addDoc,
     collection,
@@ -24,11 +26,15 @@ import {
 import { db } from "../../firebase/firebase-config";
 import Dropdown from "../../components/dropdown/Dropdown";
 import Select from "../../components/dropdown/Select";
+import ImageUploader from "quill-image-uploader";
+import "react-quill/dist/quill.snow.css";
 import List from "../../components/dropdown/List";
 import Option from "../../components/dropdown/Option";
 import { useAuth } from "../../contexts/auth-context";
 import { toast } from "react-toastify";
 import DashboardHeading from "../dashboard/DashboardHeading";
+
+Quill.register("modules/imageUploader", ImageUploader);
 
 const PostAddNewStyles = styled.div``;
 
@@ -93,10 +99,11 @@ function PostAddNew() {
             await addDoc(colRef, {
                 ...cloneValues,
                 image,
+                content,
                 createdAt: serverTimestamp(),
             });
 
-            toast.success("Create new post sucessfully");
+            toast.success("Success!", { pauseOnHover: false });
             reset({
                 title: "",
                 slug: "",
@@ -108,6 +115,7 @@ function PostAddNew() {
             });
             setSelectCategory(null);
             handleResetUpload();
+            setContent("");
         } catch (error) {
             setLoading(false);
         } finally {
@@ -145,6 +153,36 @@ function PostAddNew() {
         });
         setSelectCategory(item);
     };
+
+    const [content, setContent] = useState("");
+    const modules = useMemo(
+        () => ({
+            toolbar: [
+                ["bold", "italic", "underline", "strike"],
+                ["blockquote"],
+                [{ header: 1 }, { header: 2 }], // custom button values
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                ["link", "image"],
+            ],
+            imageUploader: {
+                upload: async (file) => {
+                    const bodyFormData = new FormData();
+                    bodyFormData.append("image", file);
+                    const response = await axios({
+                        method: "post",
+                        url: "https://api.imgbb.com/1/upload?key=4ead2467144f52e461408662982ac5a8",
+                        data: bodyFormData,
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
+                    return response.data.data.url;
+                },
+            },
+        }),
+        []
+    );
 
     return (
         <PostAddNewStyles>
@@ -205,6 +243,18 @@ function PostAddNew() {
                                 {selectCategory?.name}
                             </span>
                         )}
+                    </Field>
+                </div>
+                <div className="mb-10">
+                    <Field>
+                        <Label>Content</Label>
+                        <ReactQuill
+                            className="w-full entry-content"
+                            theme="snow"
+                            modules={modules}
+                            value={content}
+                            onChange={setContent}
+                        />
                     </Field>
                 </div>
                 <div className="grid grid-cols-2 gap-x-10 mb-10">

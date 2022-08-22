@@ -31,6 +31,10 @@ function CategoryUpdate() {
     const categoryId = param.get("id");
 
     useEffect(() => {
+        document.title = "Update category";
+    }, []);
+
+    useEffect(() => {
         async function fetchData() {
             const colRef = doc(db, "categories", categoryId);
             const singleDoc = await getDoc(colRef);

@@ -39,7 +39,9 @@ function UserUpdate() {
     const { image, setImage, progress, handleSelectImage, handleDeleteImage } =
         useFirebaseImage(setValue, getValues);
 
-    console.log("image", image);
+    useEffect(() => {
+        document.title = "Update user";
+    }, []);
 
     useEffect(() => {
         async function fetchData() {
@@ -62,7 +64,7 @@ function UserUpdate() {
                 avatar: image,
                 status: Number(values.status),
             });
-            toast.success("Successfully!");
+            toast.success("Success!", { pauseOnHover: false });
         } catch (error) {
             console.log(error);
             toast.error("Error!!!");
@@ -73,10 +75,7 @@ function UserUpdate() {
 
     return (
         <div>
-            <DashboardHeading
-                title="Update user"
-                desc="Update user information"
-            ></DashboardHeading>
+            <DashboardHeading title="Update user"></DashboardHeading>
             <form onSubmit={handleSubmit(handleUpdateUser)}>
                 <div className="w-[200px] h-[200px] mx-auto rounded-full mb-10">
                     <ImageUpload

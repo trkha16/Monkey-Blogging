@@ -29,6 +29,8 @@ import { toast } from "react-toastify";
 import "react-quill/dist/quill.snow.css";
 import { useMemo } from "react";
 import axios from "axios";
+import useFirebaseImage from "../../hooks/useFirebaseImage";
+import ImageUpload from "../../components/image/ImageUpload";
 Quill.register("modules/imageUploader", ImageUploader);
 
 const PostUpdate = () => {
@@ -37,12 +39,20 @@ const PostUpdate = () => {
 
     const [content, setContent] = useState("");
 
-    const { control, handleSubmit, setValue, watch, reset } = useForm({
-        mode: "onChange",
-    });
+    const { control, handleSubmit, setValue, watch, reset, getValues } =
+        useForm({
+            mode: "onChange",
+        });
 
     const watchHot = watch("hot");
     const watchStatus = watch("status");
+
+    useEffect(() => {
+        document.title = "Update post";
+    }, []);
+
+    const { image, setImage, progress, handleSelectImage, handleDeleteImage } =
+        useFirebaseImage(setValue, getValues);
 
     useEffect(() => {
         async function fetchData() {
@@ -53,10 +63,11 @@ const PostUpdate = () => {
                 reset(docSnapshot.data());
                 setSelectCategory(docSnapshot.data()?.category || "");
                 setContent(docSnapshot.data()?.content || "");
+                setImage(docSnapshot.data()?.image);
             }
         }
         fetchData();
-    }, [postId, reset]);
+    }, [postId, reset, setImage]);
 
     const [categories, setCategories] = useState([]);
     useEffect(() => {
@@ -92,6 +103,7 @@ const PostUpdate = () => {
         await updateDoc(docRef, {
             ...values,
             content,
+            image,
         });
         toast.success("Success");
     };
@@ -152,13 +164,13 @@ const PostUpdate = () => {
                 <div className="grid grid-cols-2 gap-x-10 mb-10">
                     <Field>
                         <Label>Image</Label>
-                        {/*  <ImageUpload
+                        <ImageUpload
                             onChange={handleSelectImage}
                             handleDeleteImage={handleDeleteImage}
                             className="h-[250px]"
                             progress={progress}
                             image={image}
-                        ></ImageUpload> */}
+                        ></ImageUpload>
                     </Field>
                     <Field>
                         <Label>Category</Label>
