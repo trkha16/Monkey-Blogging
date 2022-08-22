@@ -1,4 +1,7 @@
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { db } from "../../firebase/firebase-config";
 import PostCategory from "./PostCategory";
 import PostImage from "./PostImage";
 import PostMeta from "./PostMeta";
@@ -20,19 +23,43 @@ const PostNewestLargeStyles = styled.div`
     }
 `;
 
-const PostNewestLarge = () => {
+const PostNewestLarge = ({
+    title = "Setup phòng học cực chill",
+    category = "Kiến thức",
+    image = "https://phukienmaytinh.vn/wp-content/uploads/2021/07/phong-game-tai-nha-6-a6e4-min.jpg",
+    author,
+    date,
+    slug,
+}) => {
+    const [userInfo, setUserInfo] = useState();
+    useEffect(() => {
+        async function fetchUserData() {
+            if (!author?.id) return;
+            const docRef = doc(db, "users", author?.id);
+            const docSnapshot = await getDoc(docRef);
+            setUserInfo(docSnapshot.data());
+        }
+        fetchUserData();
+    }, [author?.id]);
+
+    const dateOfPost = date ? new Date(date?.seconds * 1000) : new Date();
+    const formatDate = new Date(dateOfPost).toLocaleDateString("vi-VI");
     return (
         <PostNewestLargeStyles>
             <PostImage
-                url="https://images.unsplash.com/photo-1510519138101-570d1dca3d66?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2294&q=80"
+                url={image}
                 alt=""
                 className="post-image"
+                to={`/${slug}`}
             ></PostImage>
-            <PostCategory className="post-category">Kiến thức</PostCategory>
-            <PostTitle size="big" className="post-title">
-                Hướng dẫn setup phòng cực chill dành cho người mới toàn tập
+            <PostCategory className="post-category">{category}</PostCategory>
+            <PostTitle size="big" className="post-title" to={`/${slug}`}>
+                {title}
             </PostTitle>
-            <PostMeta></PostMeta>
+            <PostMeta
+                authorName={userInfo?.fullname}
+                date={formatDate}
+            ></PostMeta>
         </PostNewestLargeStyles>
     );
 };

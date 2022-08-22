@@ -13,10 +13,7 @@ const PostImageStyles = styled.div`
 function PostImage({ className = "", url = "", alt = "", to = null }) {
     if (to)
         return (
-            <NavLink
-                to={to}
-                style={{ display: "block", width: "100%", height: "100%" }}
-            >
+            <NavLink to={to}>
                 <PostImageStyles className={className}>
                     <img src={url} alt={alt} loading="lazy" />
                 </PostImageStyles>
