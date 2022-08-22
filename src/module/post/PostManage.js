@@ -15,7 +15,6 @@ import ActionDelete from "../../components/action/ActionDelete";
 import ActionEdit from "../../components/action/ActionEdit";
 import ActionView from "../../components/action/ActionView";
 import Button from "../../components/button/Button";
-import Pagination from "../../components/pagination/Pagination";
 import Table from "../../components/table/Table";
 import { db } from "../../firebase/firebase-config";
 import DashboardHeading from "../dashboard/DashboardHeading";
@@ -174,9 +173,6 @@ const PostManage = () => {
                         })}
                 </tbody>
             </Table>
-            <div className="mt-10">
-                <Pagination></Pagination>
-            </div>
         </div>
     );
 };

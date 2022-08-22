@@ -68,7 +68,6 @@ function UserTable() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 await deleteDoc(colRef);
-                //await deleteUser(user);
                 toast.success("Success");
                 Swal.fire("Deleted!", "Your file has been deleted.", "success");
             }

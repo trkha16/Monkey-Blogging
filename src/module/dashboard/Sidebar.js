@@ -1,5 +1,5 @@
 import { signOut } from "firebase/auth";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { auth } from "../../firebase/firebase-config";
 
@@ -8,17 +8,6 @@ const SidebarStyles = styled.div`
     background-color: #ffffff;
     box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
     border-radius: 12px;
-    .sidebar-logo {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        gap: 0 20px;
-        margin-bottom: 20px;
-        padding: 20px 20px 0;
-        img {
-            max-width: 40px;
-        }
-    }
     .menu-item {
         display: flex;
         align-items: center;
@@ -41,19 +30,8 @@ const SidebarStyles = styled.div`
 `;
 
 function Sidebar() {
-    const navigate = useNavigate();
-
     return (
         <SidebarStyles className="sidebar">
-            <div
-                className="sidebar-logo cursor-pointer"
-                onClick={() => {
-                    navigate("/");
-                }}
-            >
-                <img srcSet="/logo.png 2x" alt="" />
-                <span>Mongkey Blogging</span>
-            </div>
             {sidebarLinks.map((link) => {
                 if (link.onClick)
                     return (

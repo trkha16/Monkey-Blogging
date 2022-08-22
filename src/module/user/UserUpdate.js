@@ -15,6 +15,7 @@ import { userRole, userStatus } from "../../utils/constants";
 import DashboardHeading from "../dashboard/DashboardHeading";
 import { toast } from "react-toastify";
 import InputPasswordToggle from "../../components/input/InputPasswordToggle";
+import Textarea from "../../components/textarea/Textarea";
 
 function UserUpdate() {
     const {
@@ -34,12 +35,11 @@ function UserUpdate() {
 
     const watchStatus = watch("status");
     const watchRole = watch("role");
-    const imageUrl = getValues("avatar");
 
-    const { progress, handleSelectImage, handleDeleteImage } = useFirebaseImage(
-        setValue,
-        getValues
-    );
+    const { image, setImage, progress, handleSelectImage, handleDeleteImage } =
+        useFirebaseImage(setValue, getValues);
+
+    console.log("image", image);
 
     useEffect(() => {
         async function fetchData() {
@@ -47,16 +47,19 @@ function UserUpdate() {
             const colRef = doc(db, "users", userId);
             const docData = await getDoc(colRef);
             reset(docData?.data());
+            setImage(docData?.data().avatar);
         }
         fetchData();
-    }, [userId, reset]);
+    }, [userId, reset, setImage]);
 
     const handleUpdateUser = async (values) => {
         if (!isValid) return;
+        console.log("values ", values);
         try {
             const colRef = doc(db, "users", userId);
             await updateDoc(colRef, {
                 ...values,
+                avatar: image,
                 status: Number(values.status),
             });
             toast.success("Successfully!");
@@ -81,7 +84,7 @@ function UserUpdate() {
                         onChange={handleSelectImage}
                         handleDeleteImage={handleDeleteImage}
                         progress={progress}
-                        image={imageUrl}
+                        image={image}
                     ></ImageUpload>
                 </div>
                 <div className="form-layout">
@@ -181,6 +184,16 @@ function UserUpdate() {
                                 User
                             </Radio>
                         </FieldCheckboxes>
+                    </Field>
+                </div>
+                <div>
+                    <Field>
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                            name="description"
+                            placeholder="Enter your description"
+                            control={control}
+                        ></Textarea>
                     </Field>
                 </div>
                 <Button

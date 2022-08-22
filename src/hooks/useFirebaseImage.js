@@ -79,6 +79,7 @@ export default function useFirebaseImage(setValue, getValues) {
 
     return {
         image,
+        setImage,
         handleResetUpload,
         progress,
         handleSelectImage,

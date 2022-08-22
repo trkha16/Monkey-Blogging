@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import parse from "html-react-parser";
+import AuthorPost from "../components/author/AuthorPost";
 
 const PostDetailsPageStyles = styled.div`
     padding-bottom: 100px;
@@ -121,14 +122,15 @@ function PostDetailsPage() {
     }, [slug]);
 
     const { user } = postInfo;
-
-    if (!slug) return <NotFoundPage></NotFoundPage>;
-    if (!postInfo.title) return <NotFoundPage></NotFoundPage>;
+    console.log(user);
 
     const date = postInfo.createdAt
         ? new Date(postInfo?.createdAt?.seconds * 1000)
         : new Date();
     const formatDate = new Date(date).toLocaleDateString("vi-VI");
+
+    if (!slug) return <NotFoundPage></NotFoundPage>;
+    if (!postInfo.title) return <NotFoundPage></NotFoundPage>;
 
     return (
         <PostDetailsPageStyles>
@@ -154,19 +156,7 @@ function PostDetailsPage() {
                         <div className="entry-content">
                             {parse(postInfo.content || "")}
                         </div>
-                        <div className="author">
-                            <div className="author-image">
-                                <img src={user?.avatar} alt="" />
-                            </div>
-                            <div className="author-content">
-                                <h3 className="author-name">
-                                    {user?.fullname}
-                                </h3>
-                                <p className="author-desc">
-                                    {user?.description}
-                                </p>
-                            </div>
-                        </div>
+                        <AuthorPost></AuthorPost>
                     </div>
                     <div className="post-related">
                         <Heading>Bài viết liên quan</Heading>
