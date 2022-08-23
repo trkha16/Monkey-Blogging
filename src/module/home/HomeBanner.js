@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Button from "../../components/button/Button";
 
 const HomeBannerStyles = styled.div`
+    width: 100%;
     height: 520px;
     background-image: linear-gradient(
         to right bottom,
@@ -19,7 +20,7 @@ const HomeBannerStyles = styled.div`
         height: 100%;
     }
     .banner-content {
-        max-width: 600px;
+        max-width: 550px;
         color: white;
     }
     .banner-heading {

@@ -34,6 +34,14 @@ const PostNewestItemStyles = styled.div`
             margin-bottom: 8px;
         }
     }
+    @media screen and (max-width: 600.98px) {
+        align-items: center;
+        .post-image {
+            width: 100px;
+            min-height: 100px;
+            height: 100%;
+        }
+    }
 `;
 const PostNewestItem = ({
     title = "Setup phòng học cực chill",

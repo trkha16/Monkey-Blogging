@@ -46,6 +46,14 @@ const HeaderStyles = styled.header`
     .header-button {
         margin-left: 20px;
     }
+    @media screen and (max-width: 1023.98px) {
+        .search {
+            display: none;
+        }
+        .header-button {
+            display: none;
+        }
+    }
 `;
 
 function Header() {
@@ -113,27 +121,29 @@ function Header() {
                             </svg>
                         </span>
                     </div>
-                    {!userInfo ? (
-                        <Button
-                            type="button"
-                            style={{ maxWidth: "200px" }}
-                            className="header-button"
-                            height="56px"
-                            to="/sign-in"
-                        >
-                            Sign In
-                        </Button>
-                    ) : (
-                        <Button
-                            type="button"
-                            style={{ maxWidth: "200px" }}
-                            className="header-button"
-                            height="56px"
-                            to="/manage/post"
-                        >
-                            Dashboard
-                        </Button>
-                    )}
+                    <div className="header-button">
+                        {!userInfo ? (
+                            <Button
+                                type="button"
+                                style={{ maxWidth: "200px" }}
+                                className="header-button"
+                                height="56px"
+                                to="/sign-in"
+                            >
+                                Sign In
+                            </Button>
+                        ) : (
+                            <Button
+                                type="button"
+                                style={{ maxWidth: "200px" }}
+                                className="header-button"
+                                height="56px"
+                                to="/manage/post"
+                            >
+                                Dashboard
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </HeaderStyles>

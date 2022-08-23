@@ -16,6 +16,14 @@ const PostMetaStyles = styled.div`
             border-radius: 100rem;
         }
     }
+    @media screen and (max-width: 600.98px) {
+        .post-time {
+            display: none;
+        }
+        .post-dot {
+            display: none;
+        }
+    }
 `;
 
 function PostMeta({

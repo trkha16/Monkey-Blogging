@@ -5,7 +5,9 @@ import HomeBanner from "../module/home/HomeBanner";
 import HomeFeature from "../module/home/HomeFeature";
 import HomeNewest from "../module/home/HomeNewest";
 
-const HomePageStyles = styled.div``;
+const HomePageStyles = styled.div`
+    width: 100%;
+`;
 
 function HomePage() {
     useEffect(() => {

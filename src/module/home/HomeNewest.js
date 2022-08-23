@@ -54,8 +54,6 @@ function HomeNewest() {
         });
     }, []);
 
-    console.log("post", posts[0]);
-
     return (
         <HomeNewestStyles className="home-block">
             <div className="container">
