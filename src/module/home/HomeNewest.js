@@ -57,7 +57,7 @@ function HomeNewest() {
     return (
         <HomeNewestStyles className="home-block">
             <div className="container">
-                <Heading>Mới nhất</Heading>
+                <Heading>Newest</Heading>
                 <div className="layout">
                     <PostNewestLarge
                         title={posts[0]?.title}

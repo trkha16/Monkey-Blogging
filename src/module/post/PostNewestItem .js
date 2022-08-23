@@ -32,6 +32,7 @@ const PostNewestItemStyles = styled.div`
         }
         &-title {
             margin-bottom: 8px;
+            display: inline;
         }
     }
     @media screen and (max-width: 600.98px) {

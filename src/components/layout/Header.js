@@ -31,7 +31,7 @@ const HeaderStyles = styled.header`
         display: flex;
         align-items: center;
         position: relative;
-        margin-right: 25px;
+        margin-right: 5px;
     }
     .search-input {
         flex: 1;
