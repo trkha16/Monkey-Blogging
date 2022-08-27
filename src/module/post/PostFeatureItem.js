@@ -12,6 +12,7 @@ const PostFeatureItemStyles = styled.div`
     border-radius: 16px;
     position: relative;
     height: 169px;
+    overflow-y: hidden;
     .post {
         &-image {
             width: 100%;
